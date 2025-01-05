@@ -12,7 +12,7 @@ function calculateWaterAmount() {
     const hotAmount = (targetTemp - coldTemp) / (hotTemp - coldTemp) * targetVolume;
     const coldAmount = targetVolume - hotAmount;
 
-    document.getElementById('temperature-result').innerHTML = `<p>用 <strong>${hotAmount.toFixed(2)} ml</strong>的熱水 及 <strong>${coldAmount.toFixed(2)} ml</strong>的冷水</p>`;
+    document.getElementById('temperature-result').innerHTML = `<p>用 <strong>${hotAmount.toFixed(2)} ml</strong> 的熱水及 <strong>${coldAmount.toFixed(2)} ml</strong> 的冷水</p>`;
 }
 
 function calculateMilk() {
@@ -22,7 +22,7 @@ function calculateMilk() {
 
     const portion = needed / water
 
-    document.getElementById('milk-result').innerHTML = `<p>用 <strong>${portion.toFixed(2)} 匙</strong>的奶粉(<strong>${(weight*portion).toFixed(2)} g</strong>) 加入${water.toFixed(2)} ml 的水中</p>`;
+    document.getElementById('milk-result').innerHTML = `<p>用 <strong>${portion.toFixed(2)} 匙</strong>的奶粉(<strong>${(weight*portion).toFixed(2)} g</strong>) 加入${needed.toFixed(2)} ml 的水中</p>`;
 }
 
 function updateTimelineContent() {
