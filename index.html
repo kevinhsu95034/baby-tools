@@ -36,31 +36,54 @@
                         <!-- Water Temperature Calculator -->
                         <div class="col-lg-6 col-md-12 mb-4">
                             <div class="custom-block bg-white p-4">
-                                <h5 class="mb-3">Water Temperature Calculator</h5>
+                                <h5 class="mb-3">水溫計算器</h5>
                                 <form id="temperature-calculator">
-                                    <div class="mb-3">
-                                        <label for="hot-water-temp" class="form-label">Hot Water Temperature (&deg;C):</label>
-                                        <input type="number" class="form-control" id="hot-water-temp" required>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="hot-water-temp" class="form-label">熱水溫度 (&deg;C):</label>
+                                            <input type="number" class="form-control" id="hot-water-temp" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="cold-water-temp" class="form-label">涼水溫度 (&deg;C):</label>
+                                            <input type="number" class="form-control" id="cold-water-temp" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="target-temp" class="form-label">需要溫度 (&deg;C):</label>
+                                            <input type="number" class="form-control" id="target-temp" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="target-volume" class="form-label">需要水量 (ml):</label>
+                                            <input type="number" class="form-control" id="target-volume" required>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="cold-water-temp" class="form-label">Cold Water Temperature (&deg;C):</label>
-                                        <input type="number" class="form-control" id="cold-water-temp" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="target-temp" class="form-label">Target Temperature (&deg;C):</label>
-                                        <input type="number" class="form-control" id="target-temp" required>
-                                    </div>
-                                    <button type="button" class="btn custom-btn" onclick="calculateWaterAmount()">Calculate</button>
+                                    <button type="button" class="btn custom-btn" onclick="calculateWaterAmount()">計算</button>
                                 </form>
-                                <div id="calculator-result" class="mt-3"></div>
+                                <div id="temperature-result" class="mt-3"></div>
                             </div>
                         </div>
 
-                        <!-- Custom Picture Block -->
+                        <!-- Milk Calculator -->
                         <div class="col-lg-6 col-md-12 mb-4">
-                            <div class="custom-block bg-white p-4 text-center">
-                                <h5 class="mb-3">Custom Picture</h5>
-                                <img src="images/sample.jpg" alt="Custom Image" class="img-fluid rounded">
+                            <div class="custom-block bg-white p-4">
+                                <h5 class="mb-3">泡奶計算器</h5>
+                                <form id="milk-calculator">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="needed-water" class="form-label">一匙需要水量 (ml):</label>
+                                            <input type="number" class="form-control" id="needed-water" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="spoon-weight" class="form-label">一匙重量 (g):</label>
+                                            <input type="number" class="form-control" id="spoon-weight" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="needed-amount" class="form-label">需要奶量 (ml):</label>
+                                            <input type="number" class="form-control" id="needed-amount" required>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn custom-btn" onclick="calculateMilk()">計算</button>
+                                </form>
+                                <div id="milk-result" class="mt-3"></div>
                             </div>
                         </div>
                     </div>
@@ -103,8 +126,20 @@
                                 <h5 class="mb-3">Timeline</h5>
                                 <input type="range" class="form-range" id="timeline-slider" min="1" max="3" step="1" value="1" oninput="updateTimelineContent()">
                                 <div id="timeline-content" class="mt-3">
-                                    <p>Content for position 1</p>
+                                    <div class="timeline-item" id="timeline-1">Content for position 1</div>
+                                    <div class="timeline-item" id="timeline-2" style="display: none;">Content for position 2</div>
+                                    <div class="timeline-item" id="timeline-3" style="display: none;">Content for position 3</div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row my-4">
+                        <!-- Custom Picture Block -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="custom-block bg-white p-4 text-center">
+                                <h5 class="mb-3">寶寶大便卡</h5>
+                                <img src="images/poop.png" alt="大便卡" class="img-fluid rounded">
                             </div>
                         </div>
                     </div>
@@ -116,40 +151,6 @@
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.bundle.min.js"></script>
         <script src="js/custom.js"></script>
-
-        <script>
-            function calculateWaterAmount() {
-                const hotTemp = parseFloat(document.getElementById('hot-water-temp').value);
-                const coldTemp = parseFloat(document.getElementById('cold-water-temp').value);
-                const targetTemp = parseFloat(document.getElementById('target-temp').value);
-
-                if (hotTemp <= targetTemp || coldTemp >= targetTemp) {
-                    document.getElementById('calculator-result').innerHTML = '<p class="text-danger">Invalid inputs. Ensure the target temperature is between hot and cold temperatures.</p>';
-                    return;
-                }
-
-                const hotAmount = (targetTemp - coldTemp) / (hotTemp - coldTemp);
-                const coldAmount = 1 - hotAmount;
-
-                document.getElementById('calculator-result').innerHTML = `<p>Use <strong>${(hotAmount * 100).toFixed(1)}%</strong> hot water and <strong>${(coldAmount * 100).toFixed(1)}%</strong> cold water.</p>`;
-            }
-
-            function updateTimelineContent() {
-                const slider = document.getElementById('timeline-slider');
-                const content = document.getElementById('timeline-content');
-
-                switch (slider.value) {
-                    case '1':
-                        content.innerHTML = '<p>Content for position 1</p>';
-                        break;
-                    case '2':
-                        content.innerHTML = '<p>Content for position 2</p>';
-                        break;
-                    case '3':
-                        content.innerHTML = '<p>Content for position 3</p>';
-                        break;
-                }
-            }
-        </script>
+        <script src="js/script.js"></script>
     </body>
 </html>
