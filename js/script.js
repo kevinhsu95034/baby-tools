@@ -60,6 +60,11 @@ document.getElementById('milk-calculator').addEventListener('input', function ()
     localStorage.setItem('weight', weight);
     localStorage.setItem('needed', needed);
 });
+document.getElementById('timeline-slider').addEventListener('input', function () {
+    const sliderValue = document.getElementById('timeline-slider').value;
+    localStorage.setItem('sliderValue', sliderValue);
+});
+
 
 // Restore data from localStorage on page load
 window.addEventListener('load', function () {
@@ -80,4 +85,10 @@ window.addEventListener('load', function () {
     if (water) document.getElementById('needed-water').value = water;
     if (weight) document.getElementById('spoon-weight').value = weight;
     if (needed) document.getElementById('needed-amount').value = needed;
+
+    const savedSliderValue = localStorage.getItem('sliderValue');
+    if (savedSliderValue) {
+        document.getElementById('timeline-slider').value = savedSliderValue;
+        updateTimelineContent(); // Update the visibility of the timeline content
+    }
 });
