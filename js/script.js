@@ -25,18 +25,51 @@ function calculateMilk() {
     document.getElementById('milk-result').innerHTML = `<p>用 <strong>${portion.toFixed(2)} 匙</strong>的奶粉(<strong>${(weight*portion).toFixed(2)} g</strong>) 加入${needed.toFixed(2)} ml 的水中</p>`;
 }
 
+
+// Function to load and parse markdown content
+async function loadTimelineContent() {
+    try {
+        const response = await fetch('../data/development.md');
+        const markdown = await response.text();
+        
+        const timelineContainer = document.getElementById('timeline-content');
+        const slider = document.getElementById('timeline-slider');
+
+        // Parse markdown content by splitting on top-level headers (#)
+        const sections = markdown.split(/^# /gm).filter(section => section.trim());
+        slider.max = sections.length; // Adjust slider range based on number of sections
+
+        // Clear any existing content
+        timelineContainer.innerHTML = '';
+
+        // Populate timeline content
+        sections.forEach((section, index) => {
+            const [title, ...contentLines] = section.split('\n');
+            const contentHtml = `<h2>${title.trim()}</h2><p>${contentLines.join('<br>')}</p>`;
+            const timelineItem = document.createElement('div');
+            timelineItem.className = 'timeline-item';
+            timelineItem.id = `timeline-${index + 1}`;
+            timelineItem.style.display = index === 0 ? 'block' : 'none'; // Show first item by default
+            timelineItem.innerHTML = contentHtml;
+            timelineContainer.appendChild(timelineItem);
+        });
+    } catch (error) {
+        console.error('Error loading timeline content:', error);
+    }
+}
+
+// Update timeline visibility
 function updateTimelineContent() {
     const sliderValue = document.getElementById('timeline-slider').value;
     const items = document.querySelectorAll('.timeline-item');
 
     items.forEach((item, index) => {
-        if (index + 1 == sliderValue) {
-            item.style.display = 'block';
-        } else {
-            item.style.display = 'none';
-        }
+        item.style.display = index + 1 == sliderValue ? 'block' : 'none';
     });
 }
+
+
+
 
 // Data preservation
 // Save data to localStorage on input change
@@ -60,11 +93,13 @@ document.getElementById('milk-calculator').addEventListener('input', function ()
     localStorage.setItem('weight', weight);
     localStorage.setItem('needed', needed);
 });
+
+// Save slider value to localStorage
 document.getElementById('timeline-slider').addEventListener('input', function () {
     const sliderValue = document.getElementById('timeline-slider').value;
     localStorage.setItem('sliderValue', sliderValue);
+    updateTimelineContent();
 });
-
 
 // Restore data from localStorage on page load
 window.addEventListener('load', function () {
@@ -86,9 +121,10 @@ window.addEventListener('load', function () {
     if (weight) document.getElementById('spoon-weight').value = weight;
     if (needed) document.getElementById('needed-amount').value = needed;
 
+    loadTimelineContent();
     const savedSliderValue = localStorage.getItem('sliderValue');
     if (savedSliderValue) {
         document.getElementById('timeline-slider').value = savedSliderValue;
-        updateTimelineContent(); // Update the visibility of the timeline content
+        updateTimelineContent();
     }
 });
