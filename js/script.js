@@ -25,7 +25,6 @@ function calculateMilk() {
     document.getElementById('milk-result').innerHTML = `<p>用 <strong>${portion.toFixed(2)} 匙</strong>的奶粉(<strong>${(weight*portion).toFixed(2)} g</strong>) 加入${needed.toFixed(2)} ml 的水中</p>`;
 }
 
-
 // Function to load and parse markdown content
 async function loadTimelineContent() {
     try {
@@ -57,7 +56,6 @@ async function loadTimelineContent() {
         console.error('Error loading timeline content:', error);
     }
 }
-
 // Update timeline visibility
 function updateTimelineContent() {
     const sliderValue = document.getElementById('timeline-slider').value;
@@ -68,6 +66,38 @@ function updateTimelineContent() {
     });
 }
 
+async function loadTableContent() {
+    try {
+        // Fetch the CSV file
+        const response = await fetch('https://kevinhsu95034.github.io/baby-tools/data/development.md'); // Adjust path to CSV file
+        const csvText = await response.text();
+
+        // Parse the CSV
+        const rows = csvText.split('\n').map(row => row.split(','));
+
+        // Get table element
+        const tableBody = document.querySelector('#dynamic-table tbody');
+
+        // Clear existing table rows
+        tableBody.innerHTML = '';
+
+        // Populate the table with rows from CSV
+        rows.forEach((row, index) => {
+            // Skip header row (index 0) if necessary
+            if (index === 0) return;
+
+            const tr = document.createElement('tr');
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell.trim();
+                tr.appendChild(td);
+            });
+            tableBody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Error loading table content:', error);
+    }
+}
 
 
 
@@ -127,4 +157,6 @@ window.addEventListener('load', function () {
         document.getElementById('timeline-slider').value = savedSliderValue;
         updateTimelineContent();
     }
+
+    loadTableContent();
 });
