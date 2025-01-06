@@ -43,8 +43,25 @@ async function loadTimelineContent() {
 
         // Populate timeline content
         sections.forEach((section, index) => {
-            const [title, ...contentLines] = section.split('\n');
-            const contentHtml = `<h2>${title.trim()}</h2><p>${contentLines.join('<br>')}</p>`;
+            // Split section by lines
+            const lines = section.split('\n');
+        
+            // Extract the first line as the title
+            const title = lines[0].trim();
+        
+            // Process the rest of the lines, bolding `##` headers
+            const contentLines = lines.slice(1).map(line => {
+                if (line.startsWith('## ')) {
+                    return `<h3><strong>${line.slice(3).trim()}</strong></h3>`;
+                } else {
+                    return `<p>${line.trim()}</p>`;
+                }
+            });
+        
+            // Combine the title and processed content lines
+            const contentHtml = `<h2>${title}</h2>${contentLines.join('')}`;
+        
+            // Create and append the timeline item
             const timelineItem = document.createElement('div');
             timelineItem.className = 'timeline-item';
             timelineItem.id = `timeline-${index + 1}`;
@@ -69,7 +86,7 @@ function updateTimelineContent() {
 async function loadTableContent() {
     try {
         // Fetch the CSV file
-        const response = await fetch('https://kevinhsu95034.github.io/baby-tools/data/development.md'); // Adjust path to CSV file
+        const response = await fetch('https://kevinhsu95034.github.io/baby-tools/data/stats.csv'); // Adjust path to CSV file
         const csvText = await response.text();
 
         // Parse the CSV
