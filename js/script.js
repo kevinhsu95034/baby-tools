@@ -29,7 +29,7 @@ function calculateMilk() {
 // Function to load and parse markdown content
 async function loadTimelineContent() {
     try {
-        const response = await fetch('/data/development.md');
+        const response = await fetch('https://kevinhsu95034.github.io/baby-tools/data/development.md');
         const markdown = await response.text();
         
         const timelineContainer = document.getElementById('timeline-content');
